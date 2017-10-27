@@ -1,0 +1,40 @@
+<launch>
+
+	<!-- Launching the camera. NOTE: openni for microsoft kinect, openni2 for asus -->
+	<include file="$(find openni_launch)/launch/openni.launch">
+    		<arg name="depth_registration" value="true" />
+   	</include>
+
+<!--
+	<node name="find_object_3d" pkg="find_object_2d" type="find_object_2d" output="screen">
+		<param name="gui" value="false" type="bool"/>
+		<param name="settings_path" value="~/.ros/find_object_2d.ini" type="str"/>
+		<param name="subscribe_depth" value="true" type="bool"/>
+		<param name="objects_path" value="~/rover_arm_ws/src/find_object_2d/saved_objs" type="str"/>
+		<param name="object_prefix" value="quadrotor" type="str"/>
+		<param name="obj_frame_prefix" value="quadrotor" type="str" /> 
+
+		<remap from="rgb/image_rect_color" to="camera/rgb/image_rect_color"/>
+		<remap from="depth_registered/image_raw" to="camera/depth_registered/image_raw"/>
+		<remap from="depth_registered/camera_info" to="camera/depth_registered/camera_info"/>
+	</node>
+-->
+	<!-- script to retrieve TF of the detected object -->
+<!--
+	<node name="tf_example" pkg="find_object_2d" type="tf_example" output="screen">
+		<param name="map_frame_id" value="/rover_structure" type="string"/>
+	</node>
+-->
+
+
+	<!-- transformations for our system -->
+<!--
+	<node pkg="tf" type="static_transform_publisher" name="rover_base_to_camera_tf" 
+		args="0.4 0.4 0.3 0.0 0.0 0.0 /rover_structure /camera_link 100" />
+-->
+
+	<node name="tictactoe_node" pkg="tictactoe_ros" type="tictactoe_ros" output="screen">
+		<remap from="/tictactoe_image" to="/camera/rgb/image_rect_color"/>
+	</node>
+
+</launch>

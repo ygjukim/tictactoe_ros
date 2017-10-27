@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<package>
+  <name>tictactoe_ros</name>
+  <version>0.1.0</version>
+  <description>
+
+     tictactoe_ros
+
+  </description>
+  <maintainer email="ygjuim@gmail.com">Young-Ju Kim</maintainer>
+  <author>Young-Ju Kim</author>
+  <license>BSD</license>
+  <!-- <url type="bugtracker">https://github.com/stonier/qt_ros/issues</url> -->
+  <!-- <url type="repository">https://github.com/stonier/qt_ros</url> -->
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>cv_bridge</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>image_transport</build_depend>
+  <build_depend>rqt_gui</build_depend>
+  <build_depend>rqt_gui_cpp</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <run_depend>cv_bridge</run_depend>
+  <run_depend>geometry_msgs</run_depend>
+  <run_depend>image_transport</run_depend>
+  <run_depend>rqt_gui</run_depend>
+  <run_depend>rqt_gui_cpp</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+ 
+</package>
