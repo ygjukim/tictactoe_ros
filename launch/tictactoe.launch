@@ -1,10 +1,11 @@
 <launch>
 
 	<!-- Launching the camera. NOTE: openni for microsoft kinect, openni2 for asus -->
+<!--
 	<include file="$(find openni_launch)/launch/openni.launch">
     		<arg name="depth_registration" value="true" />
    	</include>
-
+-->
 <!--
 	<node name="find_object_3d" pkg="find_object_2d" type="find_object_2d" output="screen">
 		<param name="gui" value="false" type="bool"/>

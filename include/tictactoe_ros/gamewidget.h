@@ -18,7 +18,8 @@ public:
 signals:
 
 public slots:
-
+    void onObjectDetected(int pos, int type);
+    
 protected:
     void paintEvent(QPaintEvent *e);
     void mousePressEvent(QMouseEvent *e);

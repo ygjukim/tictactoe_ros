@@ -23,6 +23,8 @@
 #include <image_transport/image_transport.h>
 #include <sensor_msgs/Image.h>
 #include <geometry_msgs/Point.h>
+#include <find_object_2d/ObjectsStamped.h>
+#include <tf/transform_listener.h>
 
 #include <opencv2/core/core.hpp>
 
@@ -66,21 +68,31 @@ public:
 	void log( const LogLevel &level, const std::string &msg);
 
 Q_SIGNALS:
+	void objectDetected(int pos, int type);
 	void imageUpdated(QImage* image);
 	void loggingUpdated();
     void rosShutdown();
 
 protected:
-	image_transport::Subscriber subscriber_;
-	cv::Mat conversion_mat_;
-
 	void callbackImage(const sensor_msgs::Image::ConstPtr& msg);
+	void objectsDetectedCallback(const find_object_2d::ObjectsStampedConstPtr & msg);
 
 private:
 	int init_argc;
 	char** init_argv;
+
 //	ros::Publisher chatter_publisher;
     QStringListModel logging_model;
+
+	image_transport::Subscriber subscriber_;
+	cv::Mat conversion_mat_;
+
+	std::string camLinkFrameId_;
+	std::string objFramePrefix_;
+    ros::Subscriber objectsSubs_;
+    tf::TransformListener *tfListener_;
+
+    int convertToCellIndex(float y, float z);
 };
 
 }  // namespace tictactoe_ros

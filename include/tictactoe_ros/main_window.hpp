@@ -61,7 +61,7 @@ public Q_SLOTS:
     *******************************************/
 //    void updateLoggingView(); // no idea why this can't connect automatically
 	void onImageUpdated(QImage* image);
-
+	
 private:
 	Ui::MainWindowDesign ui;
 	QNode qnode;

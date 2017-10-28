@@ -42,6 +42,8 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent)
     QObject::connect(&qnode, SIGNAL(rosShutdown()), this, SLOT(close()));
     QObject::connect(&qnode, SIGNAL(imageUpdated(QImage*)), this, SLOT(onImageUpdated(QImage*)));
 
+    QObject::connect(&qnode, SIGNAL(objectDetected(int, int)), ui.game_board, SLOT(onObjectDetected(int, int)));    
+
 	/*********************
 	** Logging
 	**********************/

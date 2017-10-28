@@ -17,7 +17,9 @@ find_package(catkin REQUIRED COMPONENTS
 	image_transport 
 	sensor_msgs 
 	geometry_msgs 
-	cv_bridge)
+	cv_bridge
+  message_filters
+  tf)
 
 if("${qt_gui_cpp_USE_QT_MAJOR_VERSION} " STREQUAL "5 ")
   find_package(Qt5Widgets REQUIRED)
@@ -69,7 +71,7 @@ endif()
 catkin_package(
   INCLUDE_DIRS ${tictactoe_ros_INCLUDE_DIRECTORIES}
 #  LIBRARIES ${PROJECT_NAME}
-  CATKIN_DEPENDS rqt_gui rqt_gui_cpp image_transport sensor_msgs cv_bridge geometry_msgs
+  CATKIN_DEPENDS rqt_gui rqt_gui_cpp image_transport sensor_msgs cv_bridge geometry_msgs message_filters tf
 )
 
 # catkin_python_setup()		// for plugin registration

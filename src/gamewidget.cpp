@@ -158,6 +158,14 @@ void GameWidget::mousePressEvent(QMouseEvent *e)
     }
 }
 
+void GameWidget::onObjectDetected(int pos, int type)
+{
+    if (displayBoard[pos] != type) {
+        displayBoard[pos] = type;
+        QWidget::update();
+    }
+}
+
 /***************************************
  * Shows "tie" message                 *
  ***************************************/

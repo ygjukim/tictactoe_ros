@@ -19,6 +19,7 @@
 #include <cv_bridge/cv_bridge.h>
 #include <opencv2/imgproc/imgproc.hpp>
 
+#include "tictactoe_ros/globals.h"
 #include "tictactoe_ros/qnode.hpp"
 
 /*****************************************************************************
@@ -27,13 +28,19 @@
 
 namespace tictactoe_ros {
 
+#define	X_OBJECT_ID			57
+#define	O1_OBJECT_ID		66
+#define	O2_OBJECT_ID		71
+
 /*****************************************************************************
 ** Implementation
 *****************************************************************************/
 
 QNode::QNode(int argc, char** argv ) :
 	init_argc(argc),
-	init_argv(argv)
+	init_argv(argv),
+	camLinkFrameId_("camera_link"),
+	objFramePrefix_("object")
 	{}
 
 QNode::~QNode() {
@@ -51,8 +58,12 @@ bool QNode::init() {
 		return false;
 	}
 
-	ros::start(); // explicitly needed since our nodehandle is going out of scope.
-	
+	ros::start(); // explicitly needed since our node handle is going out of scope.
+
+	ros::NodeHandle pnh("~");
+	pnh.param("camera_link_frame_id", camLinkFrameId_, camLinkFrameId_);
+	pnh.param("object_prefix", objFramePrefix_, objFramePrefix_);
+
 	ros::NodeHandle nh;
 	// Add your ros communications here.
 	//chatter_publisher = n.advertise<std_msgs::String>("chatter", 1000);
@@ -70,11 +81,16 @@ bool QNode::init() {
 		//QMessageBox::warning(NULL, tr("Loading image transport plugin failed"), e.what());
 	}
 
+	objectsSubs_ = nh.subscribe("objectsStamped", 1, &QNode::objectsDetectedCallback, this);
+
+	tfListener_ =  new tf::TransformListener();
+
 	start();
 	
 	return true;
 }
 
+#if 0
 bool QNode::init(const std::string &master_url, const std::string &host_url) {
 	std::map<std::string,std::string> remappings;
 	remappings["__master"] = master_url;
@@ -108,6 +124,7 @@ bool QNode::init(const std::string &master_url, const std::string &host_url) {
 	
 	return true;
 }
+#endif
 
 void QNode::run() {
 	ros::Rate loop_rate(20);
@@ -219,7 +236,6 @@ void QNode::callbackImage(const sensor_msgs::Image::ConstPtr& msg)
 			} else {
 				qWarning("ImageView.callback_image() could not convert image from '%s' to 'rgb8' (%s)", msg->encoding.c_str(), e.what());
 				// ui_.image_frame->setImage(QImage());
-				QImage emptyImage();
 				Q_EMIT imageUpdated(new QImage());
 				return;
 			}
@@ -228,7 +244,6 @@ void QNode::callbackImage(const sensor_msgs::Image::ConstPtr& msg)
 		{
 			qWarning("ImageView.callback_image() while trying to convert image from '%s' to 'rgb8' an exception was thrown (%s)", msg->encoding.c_str(), e.what());
 			//ui_.image_frame->setImage(QImage());
-			//QImage emptyImage();
 			Q_EMIT imageUpdated(new QImage());
 			return;
 		}
@@ -249,6 +264,62 @@ void QNode::callbackImage(const sensor_msgs::Image::ConstPtr& msg)
 	// though could check and see if the aspect ratio changed or not.
 	onZoom1(ui_.zoom_1_push_button->isChecked());
 #endif	
+}
+
+#define	CELL_WIDTH		0.06
+#define	ALLOWABLE_GAP	0.03
+
+int QNode::convertToCellIndex(float y, float z) {
+	int pos = -1;
+
+	y -= CELL_WIDTH;
+	y = fabs(y);
+	if (y < ALLOWABLE_GAP)  pos = 0;
+	else if (y < CELL_WIDTH + ALLOWABLE_GAP) pos = 1;
+	else if (y < 2 * CELL_WIDTH + ALLOWABLE_GAP) pos = 2;
+
+	if (pos >= 0) {
+		z -= CELL_WIDTH;
+		z = fabs(z);
+		if (z > ALLOWABLE_GAP) {
+			if (z < CELL_WIDTH + ALLOWABLE_GAP) pos += 3;
+			else if (z < 2 * CELL_WIDTH + ALLOWABLE_GAP) pos += 6;
+		}
+	}
+
+	return pos;
+}
+
+void QNode::objectsDetectedCallback(const find_object_2d::ObjectsStampedConstPtr & msg)
+{
+	if(msg->objects.data.size())
+	{
+		for(unsigned int i=0; i<msg->objects.data.size(); i+=12)
+		{
+			// get data
+			int id = (int)msg->objects.data[i];
+			std::string objectFrameId = QString("%1_%2").arg(objFramePrefix_.c_str()).arg(id).toStdString(); // "object_1", "object_2"
+
+			tf::StampedTransform pose;
+			try
+			{
+				// Get transformation from "object_#" frame to target frame "camera_link"
+				// The timestamp matches the one sent over TF
+				tfListener_->lookupTransform(camLinkFrameId_, objectFrameId, msg->header.stamp, pose);
+			}
+			catch(tf::TransformException & ex)
+			{
+				ROS_WARN("%s",ex.what());
+				continue;
+			}
+
+			int pos = convertToCellIndex(pose.getOrigin().y(), pose.getOrigin().z());
+			if (pos < 0)  continue;
+			int type = (id == X_OBJECT_ID) ? X : O;
+
+			Q_EMIT objectDetected(pos, type);
+		}
+	}
 }
 
 }  // namespace tictactoe_ros
