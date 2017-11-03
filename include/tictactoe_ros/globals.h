@@ -3,7 +3,7 @@
 namespace tictactoe_ros {
 
 enum GameState { WIN = 6, LOSE = -6, TIE = 0, PLAY = 1, END = -1};
-enum { X = 1, O = -1, EMPTY = 0 };
+enum { X1 = 2, X = 1, O = -1, O1 = -2, EMPTY = 0 };
 
 struct Move
 {
@@ -17,7 +17,9 @@ struct Move
 struct CurrentPly
 {
     int player;
-    CurrentPly() : player(X) {}
+    int cell;
+
+    CurrentPly() : player(X), cell(-1) {}
     inline void Toggle()
     {
         player *= -1;

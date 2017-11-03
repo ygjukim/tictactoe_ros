@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>994</width>
-    <height>444</height>
+    <width>1039</width>
+    <height>475</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>30</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>QRosApp</string>
@@ -36,6 +42,9 @@
         <height>0</height>
        </size>
       </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
       <property name="title">
        <string>Tic-Tac-Toe Game Board</string>
       </property>
@@ -47,7 +56,7 @@
         <widget class="tictactoe_ros::GameWidget" name="game_board" native="true">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
+           <horstretch>10</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
@@ -59,6 +68,28 @@
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QPushButton" name="button_reset">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>20</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string>Reset</string>
          </property>
         </widget>
        </item>
@@ -82,10 +113,10 @@
      </spacer>
     </item>
     <item>
-    <layout class="QHBoxLayout" name="image_layout" stretch="1">
-     <property name="spacing">
-      <number>0</number>
-     </property>      
+     <layout class="QHBoxLayout" name="image_layout" stretch="1">
+      <property name="spacing">
+       <number>0</number>
+      </property>
       <item>
        <widget class="QScrollArea" name="scrollArea">
         <property name="frameShape">
@@ -99,8 +130,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>557</width>
-           <height>404</height>
+           <width>600</width>
+           <height>433</height>
           </rect>
          </property>
          <property name="sizePolicy">
@@ -157,7 +188,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>994</width>
+     <width>1039</width>
      <height>22</height>
     </rect>
    </property>

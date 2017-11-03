@@ -267,7 +267,8 @@ void QNode::callbackImage(const sensor_msgs::Image::ConstPtr& msg)
 }
 
 #define	CELL_WIDTH		0.06
-#define	ALLOWABLE_GAP	0.03
+#define	ALLOWABLE_GAP	0.01
+#define	Z_OFFSET		0.15
 
 int QNode::convertToCellIndex(float y, float z) {
 	int pos = -1;
@@ -275,17 +276,19 @@ int QNode::convertToCellIndex(float y, float z) {
 	y -= CELL_WIDTH;
 	y = fabs(y);
 	if (y < ALLOWABLE_GAP)  pos = 0;
-	else if (y < CELL_WIDTH + ALLOWABLE_GAP) pos = 1;
-	else if (y < 2 * CELL_WIDTH + ALLOWABLE_GAP) pos = 2;
+	else if (y < CELL_WIDTH + ALLOWABLE_GAP) pos = 3;
+	else if (y < 2 * CELL_WIDTH + ALLOWABLE_GAP) pos = 6;
 
 	if (pos >= 0) {
-		z -= CELL_WIDTH;
+		z -= (Z_OFFSET + CELL_WIDTH);
 		z = fabs(z);
 		if (z > ALLOWABLE_GAP) {
-			if (z < CELL_WIDTH + ALLOWABLE_GAP) pos += 3;
-			else if (z < 2 * CELL_WIDTH + ALLOWABLE_GAP) pos += 6;
+			if (z < CELL_WIDTH + ALLOWABLE_GAP) pos += 1;
+			else if (z < 2 * CELL_WIDTH + ALLOWABLE_GAP) pos += 2;
 		}
 	}
+
+//	ROS_INFO("[%f, %f] ==> %d", y, z, pos);
 
 	return pos;
 }

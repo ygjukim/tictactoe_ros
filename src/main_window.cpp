@@ -34,7 +34,7 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent)
 	ui.setupUi(this); // Calling this incidentally connects all ui's triggers to on_...() callbacks in this class.
 
     QObject::connect(ui.actionAbout_Qt, SIGNAL(triggered(bool)), qApp, SLOT(aboutQt())); // qApp is a global variable for the application
-
+ 
     ReadSettings();
 	setWindowIcon(QIcon(":/images/icon.png"));
 //	ui.tab_manager->setCurrentIndex(0); // ensure the first tab is showing - qt-designer should have this already hardwired, but often loses it (settings?).
@@ -80,6 +80,14 @@ void MainWindow::showNoMasterMessage() {
 void MainWindow::onImageUpdated(QImage *image) {
 //	printf("[SLOT] image = %d x %d\n", image->width(), image->height());
 	ui.image_frame->setImage(*image);
+}
+
+/*
+ * These triggers whenever the button is clicked, regardless of whether it
+ * is already checked or not.
+ */
+void MainWindow::on_button_reset_clicked(bool check ) {
+	ui.game_board->Reset();
 }
 
 #if 0
